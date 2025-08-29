@@ -1,0 +1,571 @@
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=edit" />
+
+  <style>
+    body {
+      background: linear-gradient(to right, #d0dadc, #9ac2e3);
+      padding: 30px;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .top-bar {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    #taskInput {
+      width: 400px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    #taskInput:focus {
+      border-color: #007bff;
+    }
+
+    .add {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      
+    }
+
+    .add:hover {
+      background-color: #0056b3;
+    }
+
+    .view {
+      display: flex;
+      gap:30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 300px;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+
+    .column:hover {
+      transform: translateY(-5px);
+    }
+
+    .column h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+
+    .card {
+      background: #fdfdfd;
+     
+      border-radius: 8px;
+      margin-bottom: 15px;
+      padding: 15px;
+      position: relative;
+      transition: 0.3s;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .card:hover {
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .card-actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .card-actions button {
+      padding: 6px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      margin: 2px;
+    }
+    .save-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    select {
+      padding: 6px;
+      border-radius: 6px;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .mon {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 5px;
+      text-align: right;
+      flex: 1;
+      float: right;
+    }
+
+
+  </style>
+</head>
+<body>
+
+  <h1>To-Do List</h1>
+
+  <div class="top-bar">
+    <input id="taskInput" type="text" placeholder="What needs to be done?" />
+    <button class="add" onclick="addTask()">Add Task</button>
+  </div>
+
+  <div class="view">
+    <div class="column" id="todoColumn">
+      <h2 style="color: #dc3545;">To Do</h2>
+    </div>
+
+    <div class="column" id="doingColumn">
+      <h2 style="color: #f0ad4e;">Doing</h2>
+    </div>
+
+    <div class="column" id="doneColumn">
+      <h2 style="color: #28a745;">Done</h2>
+    </div>
+  </div>
+
+  <script>
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const taskText = input.value.trim();
+
+      if (taskText === '') {
+        alert('Please enter a task!');
+        return;
+      }
+
+      const taskCard = createTaskCard(taskText, 'todo');
+      document.getElementById('todoColumn').appendChild(taskCard);
+      input.value = '';
+    }
+
+    function createTaskCard(text, status) {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const taskText = document.createElement('p');
+      taskText.textContent = text;
+
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+
+      // Date
+      const date = new Date();
+      const dateEl = document.createElement('div');
+      dateEl.className = 'mon';
+      dateEl.textContent = date.toLocaleString();
+
+      // Edit Button
+      const editBtn = document.createElement('button');
+      editBtn.className = 'edit-btn';
+      editBtn.innerHTML = `<span class="material-symbols-outlined">edit</span> `
+      editBtn.onclick = function () {
+        const inputEdit = document.createElement('input');
+        inputEdit.type = 'text';
+        inputEdit.value = taskText.textContent;
+
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'save-btn';
+        saveBtn.textContent = '💾 Save';
+
+        saveBtn.onclick = function () {
+          if (inputEdit.value.trim()) {
+            taskText.textContent = inputEdit.value.trim();
+            card.replaceChild(taskText, inputEdit);
+            actions.replaceChild(editBtn, saveBtn);
+          } else {
+            alert("Task can't be empty.");
+          }
+        };
+
+        card.replaceChild(inputEdit, taskText);
+        actions.replaceChild(saveBtn, editBtn);
+      };
+
+      // Delete Button
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.textContent = '❌';
+      deleteBtn.onclick = () => card.remove();
+
+      // Status Dropdown
+      const statusSelect = document.createElement('select');
+      ['todo', 'doing', 'done'].forEach(state => {
+        const option = document.createElement('option');
+        option.value = state;
+        option.textContent = state.charAt(0).toUpperCase() + state.slice(1);
+        if (state === status) option.selected = true;
+        statusSelect.appendChild(option);
+      });
+
+      statusSelect.onchange = function () {
+        moveTask(card, statusSelect.value);
+      };
+
+      actions.appendChild(dateEl);
+      actions.appendChild(editBtn);
+      actions.appendChild(deleteBtn);
+      actions.appendChild(statusSelect);
+
+      card.appendChild(taskText);
+      card.appendChild(actions);
+
+      return card;
+    }
+
+    function moveTask(card, newStatus) {
+      const columns = {
+        todo: 'todoColumn',
+        doing: 'doingColumn',
+        done: 'doneColumn'
+      };
+      document.getElementById(columns[newStatus]).appendChild(card);
+    }
+  </script>
+</body>
+</html>
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>To-Do List</title>
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+  <style>
+    body {
+      background: linear-gradient(to right, #d0dadc, #9ac2e3);
+      padding: 30px;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .top-bar {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+}
+
+    #taskInput {
+      width: 400px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    #taskInput:focus {
+      border-color: #007bff;
+    }
+
+    .add {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+
+    .add:hover {
+      background-color: #0056b3;
+    }
+
+    .view {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 300px;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+
+    .column:hover {
+      transform: translateY(-5px);
+    }
+
+    .column h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+
+    .card {
+      background: #fdfdfd;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      padding: 15px;
+      position: relative;
+      transition: 0.3s;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .card:hover {
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .card-actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .card-actions button {
+      padding: 6px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      margin: 2px;
+      background: none;
+    }
+
+    .save-btn {
+      background-color: #28a745;
+    }
+
+    select {
+      padding: 6px;
+      border-radius: 6px;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .mon {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 5px;
+      text-align: right;
+      flex: 1;
+      float: right;
+    }
+    h2{
+      border-bottom: 2px solid rgb(174, 174, 174);
+      padding-bottom: 1em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>To-Do List</h1>
+
+  <div class="top-bar">
+    <input id="taskInput" type="text" placeholder="What needs to be done?" />
+    <button class="add" onclick="addTask()">Add Task</button>
+  </div>
+
+  <div class="view">
+    <div class="column" id="todoColumn">
+      <h2 style="color: #dc3545;">To Do</h2>
+    </div>
+
+    <div class="column" id="doingColumn">
+      <h2 style="color: #f0ad4e;">Doing</h2>
+    </div>
+
+    <div class="column" id="doneColumn">
+      <h2 style="color: #28a745;">Done</h2>
+    </div>
+  </div>
+
+  <script>
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const taskText = input.value.trim();
+
+      if (taskText === '') {
+        alert('Please enter a task!');
+        return;
+      }
+
+      const taskCard = createTaskCard(taskText, 'todo');
+      document.getElementById('todoColumn').appendChild(taskCard);
+      input.value = '';
+    }
+
+    function createTaskCard(text, status) {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const taskText = document.createElement('p');
+      taskText.textContent = text;
+
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+
+      // Date 
+      const date = new Date();
+      const dateEl = document.createElement('div');
+      dateEl.className = 'mon';
+      const formattedDate = date.toLocaleDateString('en-GB'); 
+      dateEl.textContent = formattedDate;
+
+      // Edit Button
+      const editBtn = document.createElement('button');
+      editBtn.className = 'edit-btn';
+      editBtn.innerHTML = `<span class="material-symbols-outlined">edit</span>`;
+      editBtn.onclick = function () {
+        const inputEdit = document.createElement('input');
+        inputEdit.type = 'text';
+        inputEdit.value = taskText.textContent;
+
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'save-btn';
+        saveBtn.innerHTML = `💾 Save`;
+
+        saveBtn.onclick = function () {
+          if (inputEdit.value.trim()) {
+            taskText.textContent = inputEdit.value.trim();
+            card.replaceChild(taskText, inputEdit);
+            actions.replaceChild(editBtn, saveBtn);
+          } else {
+            alert("Task can't be empty.");
+          }
+        };
+
+        card.replaceChild(inputEdit, taskText);
+        actions.replaceChild(saveBtn, editBtn);
+      };
+
+      // Delete Button
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.innerHTML = `<span class="material-symbols-outlined">delete</span>`;
+      deleteBtn.onclick = () => card.remove();
+
+      // Status Dropdown
+      const statusSelect = document.createElement('select');
+      ['todo', 'doing', 'done'].forEach(state => {
+        const option = document.createElement('option');
+        option.value = state;
+        option.textContent = state.charAt(0).toUpperCase() + state.slice(1);
+        if (state === status) option.selected = true;
+        statusSelect.appendChild(option);
+      });
+
+      statusSelect.onchange = function () {
+        moveTask(card, statusSelect.value);
+      };
+
+      actions.appendChild(dateEl);
+      actions.appendChild(editBtn);
+      actions.appendChild(deleteBtn);
+      actions.appendChild(statusSelect);
+
+      card.appendChild(taskText);
+      card.appendChild(actions);
+
+      return card;
+    }
+
+    function moveTask(card, newStatus) {
+      const columns = {
+        todo: 'todoColumn',
+        doing: 'doingColumn',
+        done: 'doneColumn'
+      };
+      document.getElementById(columns[newStatus]).appendChild(card);
+    }
+  </script>
+</body>
+</html> 
+
+
